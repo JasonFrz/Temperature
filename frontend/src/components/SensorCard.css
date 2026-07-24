@@ -1,0 +1,51 @@
+.sensor-card {
+  background: var(--card-bg, rgba(30, 41, 59, 0.4));
+  border: 4px solid var(--glass-border, rgba(255, 255, 255, 0.2));
+  border-radius: 12px; /* Less rounded, more industrial */
+  padding: 4rem 3rem;
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.sensor-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.sensor-title {
+  color: #ffffff; /* Putih semua */
+  font-size: 3.5rem;
+  text-transform: uppercase;
+  font-weight: 800; 
+  letter-spacing: 4px;
+}
+
+.sensor-value-container {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 1.5rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.sensor-value {
+  color: #ffffff; /* Putih semua */
+  font-size: min(15vw, 16rem);
+  font-weight: 900; 
+  line-height: 1;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  letter-spacing: -4px; 
+}
+
+.sensor-unit {
+  color: #ffffff; /* Putih semua */
+  font-size: 4.5rem;
+  font-weight: 800;
+}
