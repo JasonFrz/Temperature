@@ -8,9 +8,9 @@ function App() {
   const targetId = queryParams.get('id');
   const [roomData, setRoomData] = useState({
     id: targetId || 'iriv-1',
-    temperature: 0,
-    humidity: 0,
-    pressure: 0
+    temperature: 14.999,
+    humidity: 24.89,
+    pressure: 101325.00
   });
   const [serverIps, setServerIps] = useState([]);
 
@@ -67,13 +67,7 @@ function App() {
           const isStale = dataToUse.lastUpdated ? (Date.now() - dataToUse.lastUpdated > 15000) : false;
 
           if (isStale) {
-            setRoomData(prev => ({
-              ...prev,
-              id: usedId,
-              temperature: 0,
-              humidity: 0,
-              pressure: 0
-            }));
+            // setRoomData(prev => ({ ...prev, id: usedId, temperature: 0, humidity: 0, pressure: 0 }));
           } else {
             setRoomData(prev => ({
               ...prev,
@@ -84,13 +78,7 @@ function App() {
             }));
           }
         } else {
-          setRoomData(prev => ({
-            ...prev,
-            id: usedId,
-            temperature: 0,
-            humidity: 0,
-            pressure: 0
-          }));
+          // setRoomData(prev => ({ ...prev, id: usedId, temperature: 0, humidity: 0, pressure: 0 }));
         }
       } catch (error) {
         console.error("Failed to fetch sensor data:", error);

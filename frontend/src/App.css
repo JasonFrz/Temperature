@@ -34,7 +34,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 8rem 2rem 2rem 2rem;
+  padding: 8.5rem 1.5rem 1.5rem 1.5rem;
   box-sizing: border-box;
 }
 
@@ -73,4 +73,31 @@
 .fullscreen-btn svg {
   width: 2rem;
   height: 2rem;
+}
+
+@media (max-width: 768px) {
+  .timestamp-header {
+    font-size: 1.2rem;
+    padding: 0.8rem 1.5rem;
+    top: 1rem;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.4;
+  }
+  
+  .fullscreen-slide {
+    padding: 6.5rem 0.5rem 0.5rem 0.5rem;
+  }
+  
+  .fullscreen-btn {
+    top: 1rem;
+    right: 1rem;
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .fullscreen-btn svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 }

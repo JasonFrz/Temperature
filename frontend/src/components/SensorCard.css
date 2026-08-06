@@ -12,6 +12,8 @@
   height: 100%;
   justify-content: center;
   gap: 1rem;
+  container-type: inline-size;
+  position: relative;
 }
 
 .sensor-header {
@@ -21,6 +23,10 @@
   margin: 0;
   flex-shrink: 0;
   z-index: 10;
+  position: absolute;
+  top: 4rem;
+  left: 0;
+  right: 0;
 }
 
 .sensor-title {
@@ -61,19 +67,11 @@
 .temp-card .sensor-unit {
   color: #ffffff;
 }
-.temp-card .sensor-value,
-.temp-card .sensor-unit {
-  font-size: clamp(10rem, min(30vw, 70vh), 75rem);
-}
 
 .hum-card .sensor-title,
 .hum-card .sensor-value,
 .hum-card .sensor-unit {
   color: #39ff14; 
-}
-.hum-card .sensor-value,
-.hum-card .sensor-unit {
-  font-size: clamp(10rem, min(50vw, 70vh), 75rem);
 }
 
 .press-card .sensor-title,
@@ -81,7 +79,23 @@
 .press-card .sensor-unit {
   color: #ffff00; 
 }
-.press-card .sensor-value,
-.press-card .sensor-unit {
-  font-size: clamp(10rem, min(27vw, 70vh), 75rem);
+
+.size-large .sensor-value,
+.size-large .sensor-unit {
+  font-size: clamp(4rem, 35cqw, 75rem);
+}
+
+.size-medium .sensor-value,
+.size-medium .sensor-unit {
+  font-size: clamp(4rem, 27cqw, 75rem);
+}
+
+.size-small .sensor-value,
+.size-small .sensor-unit {
+  font-size: clamp(4rem, 20cqw, 75rem);
+}
+
+.size-xs .sensor-value,
+.size-xs .sensor-unit {
+  font-size: clamp(4rem, 15cqw, 75rem);
 }

@@ -2,8 +2,20 @@ import React from 'react';
 import './SensorCard.css';
 
 const SensorCard = ({ title, value, unit, colorHint }) => {
+  const valStr = String(value);
+  const length = valStr.length;
+  
+  let sizeClass = 'size-large';
+  if (length >= 9) {
+    sizeClass = 'size-xs';
+  } else if (length >= 6) {
+    sizeClass = 'size-small';
+  } else if (length >= 4) {
+    sizeClass = 'size-medium';
+  }
+
   return (
-    <div className={`sensor-card ${colorHint}`}>
+    <div className={`sensor-card ${colorHint} ${sizeClass}`}>
       <div className="sensor-header">
         <h3 className="sensor-title">{title}</h3>
       </div>
