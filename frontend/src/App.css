@@ -11,7 +11,7 @@
 
 .timestamp-header {
   position: absolute;
-  top: 1.5rem;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   font-size: 3rem;
@@ -20,9 +20,10 @@
   z-index: 100;
   background: rgba(0, 0, 0, 0.4);
   padding: 1rem 3rem;
-  border-radius: 50px;
+  border-radius: 0 0 30px 30px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: none;
   letter-spacing: 2px;
   white-space: nowrap;
 }
@@ -34,7 +35,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 8.5rem 1.5rem 1.5rem 1.5rem;
+  padding: 7.5rem 0.5rem 0.5rem 0.5rem;
   box-sizing: border-box;
 }
 
@@ -79,14 +80,14 @@
   .timestamp-header {
     font-size: 1.2rem;
     padding: 0.8rem 1.5rem;
-    top: 1rem;
+    top: 0;
     white-space: normal;
     text-align: center;
     line-height: 1.4;
   }
   
   .fullscreen-slide {
-    padding: 6.5rem 0.5rem 0.5rem 0.5rem;
+    padding: 5.5rem 0.2rem 0.2rem 0.2rem;
   }
   
   .fullscreen-btn {
