@@ -15,8 +15,8 @@ app.get('/api/sensor', (req, res) => {
   res.json(sensorsData);
 });
 
-app.post('/api/sensor', (req, res) => {
-  const sensorId = req.body.id || req.body.sensorId || 'iriv-1';
+app.post('/api/sensor/:id?', (req, res) => {
+  const sensorId = req.params.id || req.body.id || req.body.sensorId || 'iriv-1';
 
   const { temperature, humidity, pressure } = req.body;
 
