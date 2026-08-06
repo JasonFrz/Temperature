@@ -24,7 +24,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || (window.location.hostname === 'localhost' ? 'http://localhost:5000' : `http://${window.location.hostname}:5000`);
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || (window.location.hostname === 'localhost' ? 'http://localhost:5000' : '');
     
     const fetchSensorData = async () => {
       try {
