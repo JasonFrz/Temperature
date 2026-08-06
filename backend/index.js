@@ -21,12 +21,13 @@ app.post('/api/sensor', (req, res) => {
   const { temperature, humidity, pressure } = req.body;
 
   if (!sensorsData[sensorId]) {
-    sensorsData[sensorId] = { temperature: 0.0, humidity: 0.0, pressure: 0 };
+    sensorsData[sensorId] = { temperature: 0.0, humidity: 0.0, pressure: 0, lastUpdated: Date.now() };
   }
 
   if (temperature !== undefined) sensorsData[sensorId].temperature = temperature;
   if (humidity !== undefined) sensorsData[sensorId].humidity = humidity;
   if (pressure !== undefined) sensorsData[sensorId].pressure = pressure;
+  sensorsData[sensorId].lastUpdated = Date.now();
 
   console.log(`Received new sensor data for ID [${sensorId}]:`, sensorsData[sensorId]);
   

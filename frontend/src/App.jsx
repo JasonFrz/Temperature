@@ -53,12 +53,32 @@ function App() {
         }
 
         if (dataToUse) {
+          const isStale = dataToUse.lastUpdated ? (Date.now() - dataToUse.lastUpdated > 15000) : false;
+
+          if (isStale) {
+            setRoomData(prev => ({
+              ...prev,
+              id: usedId,
+              temperature: 0,
+              humidity: 0,
+              pressure: 0
+            }));
+          } else {
+            setRoomData(prev => ({
+              ...prev,
+              id: usedId,
+              temperature: dataToUse.temperature !== undefined && dataToUse.temperature !== 0 ? dataToUse.temperature : prev.temperature,
+              humidity: dataToUse.humidity !== undefined && dataToUse.humidity !== 0 ? dataToUse.humidity : prev.humidity,
+              pressure: dataToUse.pressure !== undefined && dataToUse.pressure !== 0 ? dataToUse.pressure : prev.pressure
+            }));
+          }
+        } else {
           setRoomData(prev => ({
             ...prev,
             id: usedId,
-            temperature: dataToUse.temperature !== undefined && dataToUse.temperature !== 0 ? dataToUse.temperature : prev.temperature,
-            humidity: dataToUse.humidity !== undefined && dataToUse.humidity !== 0 ? dataToUse.humidity : prev.humidity,
-            pressure: dataToUse.pressure !== undefined && dataToUse.pressure !== 0 ? dataToUse.pressure : prev.pressure
+            temperature: 0,
+            humidity: 0,
+            pressure: 0
           }));
         }
       } catch (error) {
