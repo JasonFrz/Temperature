@@ -8,9 +8,9 @@ function App() {
   const targetId = queryParams.get('id');
   const [roomData, setRoomData] = useState({
     id: targetId || 'iriv-1',
-    temperature: 24.5,
-    humidity: 50.0,
-    pressure: 1013
+    temperature: 0,
+    humidity: 0,
+    pressure: 0
   });
   const [serverIps, setServerIps] = useState([]);
 
