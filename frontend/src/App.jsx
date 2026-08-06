@@ -6,13 +6,14 @@ import './App.css';
 
 function App() {
   const queryParams = new URLSearchParams(window.location.search);
-  const targetId = queryParams.get('id');
+  const targetIp = queryParams.get('ip');
   const [roomData, setRoomData] = useState({
-    id: targetId || 'IRIV-1',
+    ip: targetIp || '192.168.1.50',
     temperature: 24.5,
     humidity: 50.0,
     pressure: 1013
   });
+  const [serverIps, setServerIps] = useState([]);
 
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -33,23 +34,23 @@ function App() {
 
     socket.on('initial_data', (allSensorsData) => {
       let dataToUse = null;
-      let usedId = roomData.id;
+      let usedIp = roomData.ip;
       
-      if (targetId && allSensorsData[targetId]) {
-        dataToUse = allSensorsData[targetId];
-        usedId = targetId;
-      } else if (!targetId) {
+      if (targetIp && allSensorsData[targetIp]) {
+        dataToUse = allSensorsData[targetIp];
+        usedIp = targetIp;
+      } else if (!targetIp) {
         const keys = Object.keys(allSensorsData);
         if (keys.length > 0) {
-          usedId = keys[0];
-          dataToUse = allSensorsData[usedId];
+          usedIp = keys[0];
+          dataToUse = allSensorsData[usedIp];
         }
       }
 
       if (dataToUse) {
         setRoomData(prev => ({
           ...prev,
-          id: usedId,
+          ip: usedIp,
           temperature: dataToUse.temperature !== undefined ? dataToUse.temperature : prev.temperature,
           humidity: dataToUse.humidity !== undefined ? dataToUse.humidity : prev.humidity,
           pressure: dataToUse.pressure !== undefined ? dataToUse.pressure : prev.pressure
@@ -57,14 +58,18 @@ function App() {
       }
     });
 
+    socket.on('server_ip', (ips) => {
+      setServerIps(ips);
+    });
+
     socket.on('sensor_update', (data) => {
-      const currentTrackedId = targetId || roomData.id;
-      if (data.id !== currentTrackedId) return;
+      const currentTrackedIp = targetIp || roomData.ip;
+      if (data.ip !== currentTrackedIp) return;
 
       if (data.temperature !== undefined || data.pressure !== undefined || data.humidity !== undefined) {
         setRoomData(prev => ({
           ...prev,
-          id: data.id,
+          ip: data.ip,
           temperature: data.temperature !== undefined && data.temperature !== 0 ? data.temperature : prev.temperature,
           humidity: data.humidity !== undefined && data.humidity !== 0 ? data.humidity : prev.humidity,
           pressure: data.pressure !== undefined && data.pressure !== 0 ? data.pressure : prev.pressure
@@ -75,7 +80,7 @@ function App() {
     return () => {
       socket.disconnect();
     };
-  }, [targetId, roomData.id]); 
+  }, [targetIp, roomData.ip]); 
 
   const carouselItems = [
     (
@@ -116,10 +121,17 @@ function App() {
     )
   ];
 
+  const getLaptopIp = () => {
+    if (serverIps.length === 0) return 'Menunggu...';
+    const preferred = serverIps.find(ip => ip.address.startsWith('192.168.'));
+    return preferred ? preferred.address : serverIps[0].address;
+  };
+  const laptopIp = getLaptopIp();
+
   return (
     <div className="app-container">
       <div className="timestamp-header">
-        <span style={{ fontWeight: 800, color: '#facc15', marginRight: '1rem' }}>[{roomData.id}]</span>
+        <span style={{ fontWeight: 800, color: '#facc15', marginRight: '1rem' }}>[{laptopIp}]</span>
         {currentTime.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} - {currentTime.toLocaleTimeString('id-ID')}
       </div>
       <Carousel items={carouselItems} autoPlayInterval={5000} />
