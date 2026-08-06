@@ -23,7 +23,7 @@ html {
   background: #020617;
   color: var(--text-primary);
   overflow: hidden;
-  /* Prevent scrolling for fullscreen carousel */
+
 }
 
 #root {

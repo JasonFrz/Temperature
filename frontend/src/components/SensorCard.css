@@ -1,51 +1,87 @@
 .sensor-card {
   background: var(--card-bg, rgba(30, 41, 59, 0.4));
   border: 4px solid var(--glass-border, rgba(255, 255, 255, 0.2));
-  border-radius: 12px; /* Less rounded, more industrial */
-  padding: 4rem 3rem;
-  flex: 1; 
+  border-radius: 12px;
+  padding: 1rem;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .sensor-header {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin: 0;
+  flex-shrink: 0;
+  z-index: 10;
 }
 
 .sensor-title {
-  color: #ffffff; /* Putih semua */
-  font-size: 3.5rem;
+  color: #ffffff;
+  font-size: 2rem;
   text-transform: uppercase;
-  font-weight: 800; 
-  letter-spacing: 4px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  border-bottom: 4px solid var(--text-secondary, #94a3b8);
+  padding-bottom: 0.5rem;
+  margin: 0;
 }
 
 .sensor-value-container {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 1rem;
   width: 100%;
-  margin-top: 1rem;
+  min-height: 0;
+  margin: 0;
 }
 
 .sensor-value {
-  color: #ffffff; /* Putih semua */
-  font-size: min(15vw, 16rem);
-  font-weight: 900; 
-  line-height: 1;
+  font-weight: 900;
+  line-height: 0.8;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  letter-spacing: -4px; 
+  letter-spacing: -6px;
 }
 
 .sensor-unit {
-  color: #ffffff; /* Putih semua */
-  font-size: 4.5rem;
   font-weight: 800;
+  line-height: 0.8;
+}
+
+.temp-card .sensor-title,
+.temp-card .sensor-value,
+.temp-card .sensor-unit {
+  color: #ffffff;
+}
+.temp-card .sensor-value,
+.temp-card .sensor-unit {
+  font-size: clamp(10rem, min(30vw, 70vh), 75rem);
+}
+
+.hum-card .sensor-title,
+.hum-card .sensor-value,
+.hum-card .sensor-unit {
+  color: #39ff14; 
+}
+.hum-card .sensor-value,
+.hum-card .sensor-unit {
+  font-size: clamp(10rem, min(50vw, 70vh), 75rem);
+}
+
+.press-card .sensor-title,
+.press-card .sensor-value,
+.press-card .sensor-unit {
+  color: #ffff00; 
+}
+.press-card .sensor-value,
+.press-card .sensor-unit {
+  font-size: clamp(10rem, min(27vw, 70vh), 75rem);
 }
