@@ -41,7 +41,6 @@ function App() {
         } else if (!targetId) {
           const keys = Object.keys(allSensorsData);
           if (keys.length > 0) {
-            // Keep current ID if it exists in data, otherwise pick first
             if (allSensorsData[roomData.id]) {
               usedId = roomData.id;
               dataToUse = allSensorsData[usedId];
