@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const os = require('os');
 
 const app = express();
 const PORT = 5000;
@@ -35,29 +34,18 @@ app.post('/api/sensor/:id?', (req, res) => {
 });
 
 
-function getLocalIps() {
-  const interfaces = os.networkInterfaces();
-  const ips = [];
-  for (const name of Object.keys(interfaces)) {
-    for (const iface of interfaces[name]) {
-      if (iface.family === 'IPv4' && !iface.internal) {
-        ips.push({ name, address: iface.address });
-      }
-    }
-  }
-  return ips;
-}
 
-if (process.env.NODE_ENV !== 'production') {
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+});
+
+if (require.main === module) {
   app.listen(PORT, '0.0.0.0', () => {
-    const ips = getLocalIps();
     console.log(`Backend API is running on http://localhost:${PORT}`);
-    console.log(`\n================================================================`);
-    console.log(`>> PILIH SERVER IP UNTUK ESP32 BERDASARKAN JARINGAN ANDA: <<`);
-    ips.forEach(ip => {
-      console.log(`- [${ip.name}]: http://${ip.address}:${PORT}/api/sensor`);
-    });
-    console.log(`================================================================\n`);
   });
 }
 

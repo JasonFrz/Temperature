@@ -1,7 +1,7 @@
 import React from 'react';
 import './SensorCard.css';
 
-const SensorCard = ({ title, value, unit, colorHint }) => {
+const SensorCard = ({ title, value, unit, colorHint, variant = 'single-view' }) => {
   const valStr = String(value);
   const length = valStr.length;
   
@@ -15,7 +15,7 @@ const SensorCard = ({ title, value, unit, colorHint }) => {
   }
 
   return (
-    <div className={`sensor-card ${colorHint} ${sizeClass}`}>
+    <div className={`sensor-card ${colorHint} ${sizeClass} variant-${variant}`}>
       <div className="sensor-header">
         <h3 className="sensor-title">{title}</h3>
       </div>

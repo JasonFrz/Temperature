@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import SensorCard from './components/SensorCard';
 import Carousel from './components/Carousel';
+import ControlRoom from './components/ControlRoom';
+import Clock from './components/Clock';
 import './App.css';
 
 function App() {
@@ -13,15 +15,10 @@ function App() {
     pressure: 0
   });
   const [serverIps, setServerIps] = useState([]);
-
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+  const [allData, setAllData] = useState({});
+  const [isControlRoom, setIsControlRoom] = useState(
+    window.location.pathname === '/control-room' || (window.location.pathname === '/' && !targetId) || window.location.search === '?id=all' || targetId === 'all'
+  );
 
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
@@ -36,6 +33,8 @@ function App() {
   };
 
   useEffect(() => {
+    let isMounted = true;
+    let timeoutId;
     const backendUrl = import.meta.env.VITE_BACKEND_URL || (window.location.hostname === 'localhost' ? 'http://localhost:5000' : '');
     
     const fetchSensorData = async () => {
@@ -43,6 +42,8 @@ function App() {
         const response = await fetch(`${backendUrl}/api/sensor`);
         if (!response.ok) return;
         const allSensorsData = await response.json();
+        
+        setAllData(allSensorsData);
         
         let dataToUse = null;
         let usedId = roomData.id;
@@ -82,13 +83,19 @@ function App() {
         }
       } catch (error) {
         console.error("Failed to fetch sensor data:", error);
+      } finally {
+        if (isMounted) {
+          timeoutId = setTimeout(fetchSensorData, 5000);
+        }
       }
     };
 
     fetchSensorData();
-    const intervalId = setInterval(fetchSensorData, 5000);
 
-    return () => clearInterval(intervalId);
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
   }, [targetId, roomData.id]); 
 
   const carouselItems = [
@@ -130,6 +137,19 @@ function App() {
     )
   ];
 
+  if (isControlRoom) {
+    return (
+      <div className="app-container">
+        <ControlRoom 
+          allData={allData} 
+          onSelectId={(id) => {
+            window.location.href = `/?id=${id}`;
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="app-container">
       <button className="fullscreen-btn" onClick={toggleFullScreen} aria-label="Toggle Fullscreen">
@@ -137,9 +157,18 @@ function App() {
           <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
         </svg>
       </button>
+      <button 
+        className="mode-toggle-btn control-room-toggle" 
+        onClick={() => {
+          setIsControlRoom(true);
+          window.history.pushState({}, '', '/');
+        }}
+      >
+        Control Room
+      </button>
       <div className="timestamp-header">
-        <span style={{ fontWeight: 800, color: '#facc15', marginRight: '1rem' }}>[{roomData.id}]</span>
-        {currentTime.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} - {currentTime.toLocaleTimeString('id-ID')}
+        <span style={{ fontWeight: 800, color: '#facc15', marginRight: '1rem' }}>{roomData.id.toUpperCase()}</span>
+        <Clock />
       </div>
       <Carousel items={carouselItems} autoPlayInterval={5000} />
     </div>

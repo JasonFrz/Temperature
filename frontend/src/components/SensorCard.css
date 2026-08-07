@@ -11,8 +11,8 @@
   width: 100%;
   height: 100%;
   justify-content: center;
-  gap: 1rem;
-  container-type: inline-size;
+  gap: 0.5rem;
+  container-type: size;
   position: relative;
 }
 
@@ -23,21 +23,26 @@
   margin: 0;
   flex-shrink: 0;
   z-index: 10;
-  position: absolute;
-  top: 1.5rem;
-  left: 0;
-  right: 0;
 }
 
 .sensor-title {
   color: #ffffff;
-  font-size: 2rem;
   text-transform: uppercase;
   font-weight: 800;
-  letter-spacing: 6px;
   border-bottom: 4px solid var(--text-secondary, #94a3b8);
   padding-bottom: 0.5rem;
   margin: 0;
+  text-align: center;
+}
+
+.variant-single-view .sensor-title {
+  font-size: clamp(2rem, 6cqw, 4rem);
+  letter-spacing: 4px;
+}
+
+.variant-control-room .sensor-title {
+  font-size: clamp(0.9rem, 6cqw, 1.8rem);
+  letter-spacing: 0.1em;
 }
 
 .sensor-value-container {
@@ -52,14 +57,15 @@
 
 .sensor-value {
   font-weight: 900;
-  line-height: 0.8;
+  line-height: 1;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  letter-spacing: -6px;
+  letter-spacing: -0.05em;
 }
 
 .sensor-unit {
   font-weight: 800;
-  line-height: 0.8;
+  line-height: 1;
+  margin-left: 0.1em;
 }
 
 .temp-card .sensor-title,
@@ -80,23 +86,37 @@
   color: #ffff00; 
 }
 
-.size-large .sensor-value,
-.size-large .sensor-unit {
+.variant-control-room.size-large .sensor-value,
+.variant-control-room.size-large .sensor-unit {
+  font-size: clamp(2rem, min(22cqw, 45cqh), 75rem);
+}
+.variant-control-room.size-medium .sensor-value,
+.variant-control-room.size-medium .sensor-unit {
+  font-size: clamp(2rem, min(18cqw, 35cqh), 75rem);
+}
+.variant-control-room.size-small .sensor-value,
+.variant-control-room.size-small .sensor-unit {
+  font-size: clamp(2rem, min(14cqw, 25cqh), 75rem);
+}
+.variant-control-room.size-xs .sensor-value,
+.variant-control-room.size-xs .sensor-unit {
+  font-size: clamp(2rem, min(10cqw, 20cqh), 75rem);
+}
+
+.variant-single-view.size-large .sensor-value,
+.variant-single-view.size-large .sensor-unit {
   font-size: clamp(4rem, 28cqw, 75rem);
 }
-
-.size-medium .sensor-value,
-.size-medium .sensor-unit {
+.variant-single-view.size-medium .sensor-value,
+.variant-single-view.size-medium .sensor-unit {
   font-size: clamp(4rem, 22cqw, 75rem);
 }
-
-.size-small .sensor-value,
-.size-small .sensor-unit {
+.variant-single-view.size-small .sensor-value,
+.variant-single-view.size-small .sensor-unit {
   font-size: clamp(4rem, 16cqw, 75rem);
 }
-
-.size-xs .sensor-value,
-.size-xs .sensor-unit {
+.variant-single-view.size-xs .sensor-value,
+.variant-single-view.size-xs .sensor-unit {
   font-size: clamp(4rem, 12cqw, 75rem);
 }
-
+

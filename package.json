@@ -2,6 +2,8 @@
   "name": "suhu-app",
   "version": "1.0.0",
   "scripts": {
+    "start": "node api/index.js",
+    "simulate": "node test/simulator.js",
     "build": "cd frontend && npm install && npm run build"
   },
   "dependencies": {
