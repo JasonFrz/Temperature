@@ -41,7 +41,7 @@
 }
 
 .variant-control-room .sensor-title {
-  font-size: clamp(0.9rem, 6cqw, 1.8rem);
+  font-size: clamp(0.9rem, 6cqw, 3rem);
   letter-spacing: 0.1em;
 }
 
