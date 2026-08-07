@@ -3,19 +3,15 @@ import SensorCard from './components/SensorCard';
 import Carousel from './components/Carousel';
 import ControlRoom from './components/ControlRoom';
 import Clock from './components/Clock';
+import { io } from 'socket.io-client';
 import './App.css';
 
 function App() {
   const queryParams = new URLSearchParams(window.location.search);
   const targetId = queryParams.get('id');
-  const [roomData, setRoomData] = useState({
-    id: targetId || 'iriv-1',
-    temperature: 0,
-    humidity: 0,
-    pressure: 0
-  });
-  const [serverIps, setServerIps] = useState([]);
+  const [activeId, setActiveId] = useState(targetId || 'iriv-1');
   const [allData, setAllData] = useState({});
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isControlRoom, setIsControlRoom] = useState(
     window.location.pathname === '/control-room' || (window.location.pathname === '/' && !targetId) || window.location.search === '?id=all' || targetId === 'all'
   );
@@ -33,70 +29,48 @@ function App() {
   };
 
   useEffect(() => {
-    let isMounted = true;
-    let timeoutId;
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || (window.location.hostname === 'localhost' ? 'http://localhost:5000' : '');
-    
-    const fetchSensorData = async () => {
-      try {
-        const response = await fetch(`${backendUrl}/api/sensor`);
-        if (!response.ok) return;
-        const allSensorsData = await response.json();
-        
-        setAllData(allSensorsData);
-        
-        let dataToUse = null;
-        let usedId = roomData.id;
-        
-        if (targetId && allSensorsData[targetId]) {
-          dataToUse = allSensorsData[targetId];
-          usedId = targetId;
-        } else if (!targetId) {
-          const keys = Object.keys(allSensorsData);
-          if (keys.length > 0) {
-            if (allSensorsData[roomData.id]) {
-              usedId = roomData.id;
-              dataToUse = allSensorsData[usedId];
-            } else {
-              usedId = keys[0];
-              dataToUse = allSensorsData[usedId];
-            }
-          }
-        }
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-        if (dataToUse) {
-          const isStale = dataToUse.lastUpdated ? (Date.now() - dataToUse.lastUpdated > 15000) : false;
+  useEffect(() => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || (window.location.port === '5173' ? 'http://localhost:5000' : '');
+    const socket = io(backendUrl);
 
-          if (isStale) {
-            setRoomData(prev => ({ ...prev, id: usedId, temperature: 0, humidity: 0, pressure: 0 }));
-          } else {
-            setRoomData(prev => ({
-              ...prev,
-              id: usedId,
-              temperature: dataToUse.temperature !== undefined && dataToUse.temperature !== 0 ? dataToUse.temperature : prev.temperature,
-              humidity: dataToUse.humidity !== undefined && dataToUse.humidity !== 0 ? dataToUse.humidity : prev.humidity,
-              pressure: dataToUse.pressure !== undefined && dataToUse.pressure !== 0 ? dataToUse.pressure : prev.pressure
-            }));
-          }
-        } else {
-          setRoomData(prev => ({ ...prev, id: usedId, temperature: 0, humidity: 0, pressure: 0 }));
-        }
-      } catch (error) {
-        console.error("Failed to fetch sensor data:", error);
-      } finally {
-        if (isMounted) {
-          timeoutId = setTimeout(fetchSensorData, 5000);
-        }
-      }
-    };
+    socket.on('initial_data', (data) => {
+      setAllData(data);
+    });
 
-    fetchSensorData();
+    socket.on('sensor_update', (newData) => {
+      setAllData(prev => ({ ...prev, ...newData }));
+    });
 
     return () => {
-      isMounted = false;
-      clearTimeout(timeoutId);
+      socket.disconnect();
     };
-  }, [targetId, roomData.id]); 
+  }, []);
+
+  useEffect(() => {
+    if (targetId) {
+      setActiveId(targetId);
+    } else {
+      const keys = Object.keys(allData);
+      if (keys.length > 0 && !allData[activeId]) {
+        setActiveId(keys[0]);
+      }
+    }
+  }, [allData, targetId, activeId]);
+
+  const currentSensor = allData[activeId] || {};
+  const isStale = currentSensor.lastUpdated ? (Date.now() - currentSensor.lastUpdated > 15000) : false;
+  
+  const roomData = {
+    id: activeId,
+    temperature: !isStale && currentSensor.temperature !== undefined ? currentSensor.temperature : 0,
+    humidity: !isStale && currentSensor.humidity !== undefined ? currentSensor.humidity : 0,
+    pressure: !isStale && currentSensor.pressure !== undefined ? currentSensor.pressure : 0,
+  };
 
   const carouselItems = [
     (
@@ -167,10 +141,18 @@ function App() {
         Control Room
       </button>
       <div className="timestamp-header">
-        <span style={{ fontWeight: 800, color: '#facc15', marginRight: '1rem' }}>{roomData.id.toUpperCase()}</span>
+        <span style={{ fontWeight: 800, color: '#facc15', marginRight: '1rem' }}>{(roomData.id || 'MENUNGGU DATA...').toUpperCase()}</span>
         <Clock />
       </div>
-      <Carousel items={carouselItems} autoPlayInterval={5000} />
+      {isMobile ? (
+        <div className="mobile-cards-stack">
+          <SensorCard title="Temperature" value={roomData.temperature} unit="°C" colorHint="temp-card" variant="single-view" />
+          <SensorCard title="Humidity" value={roomData.humidity} unit="%" colorHint="hum-card" variant="single-view" />
+          <SensorCard title="Pressure" value={roomData.pressure} unit="Pa" colorHint="press-card" variant="single-view" />
+        </div>
+      ) : (
+        <Carousel items={carouselItems} autoPlayInterval={5000} />
+      )}
     </div>
   );
 }

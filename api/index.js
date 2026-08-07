@@ -1,8 +1,16 @@
 const express = require('express');
 const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+  }
+});
 
 app.use(cors());
 app.use(express.json());
@@ -15,7 +23,11 @@ app.get('/api/sensor', (req, res) => {
 });
 
 app.post('/api/sensor/:id?', (req, res) => {
-  const sensorId = req.params.id || req.body.id || req.body.sensorId || 'iriv-1';
+  const sensorId = req.params.id || req.body.id || req.body.sensorId;
+
+  if (!sensorId) {
+    return res.status(400).json({ error: 'Sensor ID is required' });
+  }
 
   const { temperature, humidity, pressure } = req.body;
 
@@ -28,12 +40,21 @@ app.post('/api/sensor/:id?', (req, res) => {
   if (pressure !== undefined) sensorsData[sensorId].pressure = pressure;
   sensorsData[sensorId].lastUpdated = Date.now();
 
+  io.emit('sensor_update', { [sensorId]: sensorsData[sensorId] });
+
   console.log(`Received new sensor data for ID [${sensorId}]:`, sensorsData[sensorId]);
   
   res.status(200).json({ message: 'Data updated successfully', data: { id: sensorId, ...sensorsData[sensorId] } });
 });
 
-
+io.on('connection', (socket) => {
+  console.log(`New client connected: ${socket.id}`);
+  socket.emit('initial_data', sensorsData);
+  
+  socket.on('disconnect', () => {
+    console.log(`Client disconnected: ${socket.id}`);
+  });
+});
 
 const path = require('path');
 
@@ -44,9 +65,9 @@ app.get('*', (req, res) => {
 });
 
 if (require.main === module) {
-  app.listen(PORT, '0.0.0.0', () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`Backend API is running on http://localhost:${PORT}`);
   });
 }
 
-module.exports = app;
+module.exports = server;

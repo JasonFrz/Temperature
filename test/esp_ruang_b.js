@@ -1,6 +1,6 @@
 const http = require('http');
 
-const BACKEND_URL = 'http://localhost:5000/api/sensor';
+const BACKEND_URL = 'http://127.0.0.1:5000/api/sensor';
 const ID = 'ruang-b';
 
 function getRandomValue(min, max) {
